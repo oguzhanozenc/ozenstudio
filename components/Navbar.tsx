@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import clsx from "clsx"; // optional but nicer
+import clsx from "clsx";
 
 type NavLink = { href: string; label: string };
 
@@ -49,13 +49,13 @@ export function Navbar() {
           />
         </Link>
 
-        {/* Links */}
-        <ul className="hidden md:flex items-center gap-5 text-[1rem] font-medium text-neutral-700">
+        {/* Navigation Links */}
+        <ul className="hidden md:flex items-center gap-5 text-sm font-medium text-zinc-800 tracking-tight">
           {LINKS.map((link) => (
             <li key={link.label}>
               <Link
                 href={link.href}
-                className="group relative block h-[1em] overflow-hidden leading-[1]"
+                className="group relative block h-[1.1em] overflow-hidden leading-none"
               >
                 <span className="block transition duration-[600ms] ease-[cubic-bezier(0.77,0,0.175,1)] group-hover:-translate-y-[110%] group-hover:opacity-0">
                   {link.label}
@@ -68,13 +68,13 @@ export function Navbar() {
           ))}
         </ul>
 
-        {/* CTA */}
+        {/* CTA Button */}
         <div className="flex justify-center">
           <Link
             href="#contact"
-            className="group relative px-4 py-2 text-[1rem] font-medium rounded-xl bg-neutral-900 text-white hover:bg-black transition-colors"
+            className="group relative px-4 py-2 text-sm font-medium tracking-tight rounded-xl bg-neutral-900 text-white hover:bg-black transition-colors"
           >
-            <span className="relative block h-[1em] overflow-hidden leading-[1]">
+            <span className="relative block h-[1.1em] overflow-hidden leading-none">
               <span className="block transition duration-[600ms] ease-[cubic-bezier(0.77,0,0.175,1)] group-hover:-translate-y-[110%] group-hover:opacity-0">
                 Contact Us
               </span>
