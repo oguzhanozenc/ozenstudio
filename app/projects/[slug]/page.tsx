@@ -5,15 +5,17 @@ import Link from "next/link";
 
 type Params = { slug: string };
 
-export function generateStaticParams() {
-  return projectsData.map((project) => ({ slug: project.slug }));
-}
+export default async function ProjectPage({
+  params,
+}: {
+  params: Promise<Params>;
+}) {
+  const { slug } = await params;
 
-export default function ProjectPage({ params }: { params: Params }) {
-  const project = projectsData.find((p) => p.slug === params.slug);
+  const project = projectsData.find((p) => p.slug === slug);
   if (!project) return notFound();
 
-  const currentIndex = projectsData.findIndex((p) => p.slug === params.slug);
+  const currentIndex = projectsData.findIndex((p) => p.slug === slug);
   const prev = projectsData[currentIndex - 1];
   const next = projectsData[currentIndex + 1];
 
@@ -49,8 +51,12 @@ export default function ProjectPage({ params }: { params: Params }) {
           <p className="text-muted-foreground text-lg">{project.summary}</p>
           <div className="text-sm text-muted-foreground space-x-4">
             {project.year && <span>{project.year}</span>}
-            {project.role?.length && <span>{project.role.join(" / ")}</span>}
-            {project.stack?.length && <span>{project.stack.join(", ")}</span>}
+            {project.role?.length > 0 && (
+              <span>{project.role.join(" / ")}</span>
+            )}
+            {Array.isArray(project.stack) && project.stack.length > 0 && (
+              <span>{project.stack.join(", ")}</span>
+            )}
           </div>
           {project.url && (
             <Link
@@ -134,4 +140,8 @@ export default function ProjectPage({ params }: { params: Params }) {
       </article>
     </>
   );
+}
+
+export function generateStaticParams() {
+  return projectsData.map((project) => ({ slug: project.slug }));
 }
