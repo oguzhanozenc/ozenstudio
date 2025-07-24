@@ -1,5 +1,5 @@
 import { Navbar } from "@/components/Navbar";
-import Hero from "@/components/Hero";
+import Header from "@/components/Header";
 import Services from "@/components/Services";
 import Process from "@/components/Process";
 import { ProjectsSection } from "@/components/ProjectsSection";
@@ -14,7 +14,7 @@ export default function Home() {
     <>
       <Navbar />
       <main className="w-full min-h-screen flex flex-col items-center">
-        <Hero />
+        <Header />
         <section id="about" className="w-full">
           <AboutSection />
         </section>

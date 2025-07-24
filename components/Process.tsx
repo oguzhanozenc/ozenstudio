@@ -4,11 +4,11 @@ export default function Process() {
   return (
     <section
       id="process"
-      className="relative isolate w-full px-6 md:px-20 py-36 bg-[#fefefe] border-t border-neutral-200 text-neutral-900"
+      className="relative isolate w-full px-6 md:px-20 py-36 text-neutral-900"
     >
       {/* Grain & Light overlays */}
-      <div className="pointer-events-none absolute inset-0 z-0 bg-[url('/grain.svg')] opacity-[0.025]" />
-      <div className="absolute inset-0 z-0 bg-gradient-radial from-white via-[#f7f7f7] to-[#ececec] opacity-90" />
+      <div className="pointer-events-none absolute inset-0 z-0  opacity-[0.025]" />
+      <div className="absolute inset-0 z-0  opacity-90" />
 
       <div className="relative z-10 max-w-5xl mx-auto space-y-24">
         {/* Heading */}

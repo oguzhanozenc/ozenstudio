@@ -1,14 +1,14 @@
 "use client";
 
-export default function Process() {
+export default function Work() {
   return (
     <section
       id="process"
-      className="relative isolate w-full px-6 md:px-20 py-36 bg-[#fefefe] border-t border-neutral-200 text-neutral-900"
+      className="relative isolate w-full px-6 md:px-20 py-36 text-neutral-900"
     >
       {/* Grain & Light overlays */}
-      <div className="pointer-events-none absolute inset-0 z-0 bg-[url('/grain.svg')] opacity-[0.025]" />
-      <div className="absolute inset-0 z-0 bg-gradient-radial from-white via-[#f7f7f7] to-[#ececec] opacity-90" />
+      <div className="pointer-events-none absolute inset-0 z-0 opacity-[0.025]" />
+      <div className="absolute inset-0 z-0  opacity-90" />
 
       <div className="relative z-10 max-w-5xl mx-auto space-y-24">
         {/* Heading */}
@@ -72,7 +72,7 @@ function Step({
   return (
     <div className="relative pl-6">
       {/* Timeline marker */}
-      <div className="absolute -left-3 top-1 w-3.5 h-3.5 rounded-full bg-neutral-900 shadow-[0_0_0_2px_white] ring-2 ring-neutral-300" />
+      <div className="absolute -left-3 top-1 w-3.5 h-3.5 rounded-full shadow-[0_0_0_2px_white] ring-2 ring-neutral-300" />
 
       <div className="mb-2 text-[10px] uppercase tracking-[0.25em] text-neutral-400 font-mono">
         Step {number}

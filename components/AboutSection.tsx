@@ -10,17 +10,17 @@ export default function AboutSection() {
   return (
     <section
       ref={ref}
-      className="relative isolate w-full bg-[#fefefe] text-neutral-900 overflow-hidden border-y border-neutral-200"
+      className="relative isolate w-full text-neutral-900 overflow-hidden"
     >
       {/* Background textures */}
-      <div className="absolute inset-0 z-0 bg-[url('/grain.svg')] opacity-[0.05] pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-br from-white via-[#f7f7f7] to-[#ececec] opacity-90 z-0" />
+      <div className="absolute inset-0 z-0  opacity-[0.05] pointer-events-none" />
+      <div className="absolute inset-0  opacity-90 z-0" />
 
       <div className="relative z-10 px-6 md:px-20 py-32 max-w-6xl mx-auto flex flex-col gap-8">
         {/* Header */}
 
         {/* Badge */}
-        <div className="mt-2 md:mt-3 ml-[2px] font-mono text-xs tracking-wide text-neutral-600 border border-dotted border-neutral-300 px-3.5 py-1 bg-white shadow-sm rounded-md ring-1 ring-neutral-100 ring-offset-1 transition duration-200 ease-in-out will-change-transform hover:-translate-y-[2px] hover:rotate-[-0.5deg] w-fit hover:border-red-500">
+        <div className="mt-2 md:mt-3 ml-[2px] font-mono text-xs tracking-wide text-neutral-600 border border-dotted border-neutral-300 px-3.5 py-1  shadow-sm rounded-md ring-1 ring-neutral-100 ring-offset-1 transition duration-200 ease-in-out will-change-transform hover:-translate-y-[2px] hover:rotate-[-0.5deg] w-fit hover:border-red-500">
           📌 “özen” (n.): Turkish for care, precision, and thoughtfulness.
         </div>
 
@@ -90,7 +90,7 @@ export default function AboutSection() {
           </p>
           <p>
             In an age of automation and scale, we believe{" "}
-            <span className="font-mono text-neutral-900">"özen"</span> is a
+            <span className="font-mono text-neutral-900">“özen”</span> is a
             differentiator.
           </p>
           <p>

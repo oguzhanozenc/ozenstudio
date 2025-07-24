@@ -4,11 +4,11 @@ export default function Services() {
   return (
     <section
       id="services"
-      className="isolate w-full border-t border-neutral-200 bg-[#fdfcf8] text-neutral-900 overflow-hidden px-6 md:px-20 py-32"
+      className="isolate w-full  text-neutral-900 overflow-hidden px-6 md:px-20 py-32"
     >
       {/* Ambient overlays */}
-      <div className="pointer-events-none absolute inset-0 z-0 bg-[url('/grain.svg')] opacity-[0.05]" />
-      <div className="absolute top-[10%] left-[40%] w-full bg-[radial-gradient(circle,_rgba(255,255,255,0.4)_10%,_transparent_70%)] opacity-20 blur-2xl z-0" />
+      <div className="pointer-events-none absolute inset-0 z-0 opacity-[0.05]" />
+      <div className="absolute top-[10%] left-[40%] w-full  opacity-20 blur-2xl z-0" />
 
       <div className="relative z-10 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-16">
         {/* Service Card */}

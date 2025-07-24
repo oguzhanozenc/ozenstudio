@@ -4,7 +4,7 @@ export default function ContactSection() {
   return (
     <section
       id="contact"
-      className="relative isolate w-full bg-[#fdfcf8] border-t border-neutral-200 text-neutral-900 overflow-hidden px-6 md:px-20 py-32"
+      className="relative isolate w-full  text-neutral-900 overflow-hidden px-6 md:px-20 py-32"
     >
       {/* Ambient grain + glow overlays */}
       <div className="pointer-events-none absolute inset-0 z-0 bg-[url('/grain.svg')] opacity-[0.05]" />

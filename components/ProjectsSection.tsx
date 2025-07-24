@@ -12,10 +12,10 @@ type Props = {
 
 export function ProjectsSection({ projects, title, description }: Props) {
   return (
-    <section className="relative isolate w-full border-t border-neutral-200 bg-[#fdfcf8] text-neutral-900 overflow-hidden px-6 md:px-20 py-32">
+    <section className="relative isolate w-full text-neutral-900 overflow-hidden px-6 md:px-20 py-32">
       {/* Ambient Grain + Glow */}
-      <div className="pointer-events-none absolute inset-0 z-0 bg-[url('/grain.svg')] opacity-[0.05]" />
-      <div className="absolute top-[-20%] left-[30%] w-[60vw] h-[60vw] bg-[radial-gradient(circle,_rgba(255,255,255,0.4)_10%,_transparent_70%)] opacity-20 blur-3xl z-0" />
+      <div className="pointer-events-none absolute inset-0 z-0 opacity-[0.05]" />
+      <div className="absolute top-[-20%] left-[30%] w-[60vw] h-[60vw]  opacity-20 blur-3xl z-0" />
 
       <div className="relative z-10 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-16">
         {/* Left Column: Terminal Meta */}
