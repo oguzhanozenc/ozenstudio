@@ -144,13 +144,21 @@ export default function AnimatedLogo() {
                 }}
                 className="inline-flex gap-1"
               >
-                {"ozenstudio".split("").map((l) => (
+                {"ozenstudio".split("").map((l, i) => (
                   <motion.span
-                    key={l}
+                    key={i}
                     className="inline-block"
+                    style={{
+                      fontFamily:
+                        i === 0
+                          ? '"EB Garamond", serif'
+                          : '"EB Garamond", serif',
+                      fontStyle: i === 0 ? "italic" : "normal",
+                    }}
                     initial={{ opacity: 0, y: 30, rotateX: -90 }}
                     animate={{ opacity: 1, y: 0, rotateX: 0 }}
                     transition={{
+                      delay: i * 0.05,
                       duration: 0.8,
                       ease: EASE,
                       type: "spring",
@@ -166,12 +174,16 @@ export default function AnimatedLogo() {
 
             {/* SUBTITLE */}
             <motion.div
-              className="text-xs text-gray-600 mt-4 tracking-[0.25em] font-light text-center"
-              initial={{ opacity: 0, y: 20 }}
+              className="mt-8 text-center text-[15px] leading-snug text-zinc-700 dark:text-zinc-300 font-editorial italic"
+              initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.2, ease: "easeOut", delay: 2.8 }}
             >
-              PREMIUM DIGITAL EXPERIENCES
+              We design and build with&nbsp;
+              <span className="not-italic text-black dark:text-white">
+                özen
+              </span>{" "}
+              — care, precision, intent.
             </motion.div>
           </motion.div>
         )}

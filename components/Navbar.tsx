@@ -3,62 +3,86 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import clsx from "clsx"; // optional but nicer
+
+type NavLink = { href: string; label: string };
+
+const LINKS: NavLink[] = [
+  { href: "#about", label: "About" },
+  { href: "#work", label: "Work" },
+  { href: "#services", label: "Services" },
+  { href: "#process", label: "Process" },
+];
 
 export function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handler = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    window.addEventListener("scroll", handler);
-    return () => window.removeEventListener("scroll", handler);
+    const onScroll = () => setScrolled(window.scrollY > 48);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
-    <header
-      className={`fixed top-0 left-0 w-full z-50 transition-colors ${
-        isScrolled ? "bg-white/70 backdrop-blur border-b border-zinc-200" : ""
-      }`}
-    >
-      <nav className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
+    <header className="fixed top-6 left-1/2 z-50 -translate-x-1/2">
+      <nav
+        className={clsx(
+          "pointer-events-auto flex items-center gap-6 rounded-2xl px-4 py-2.5",
+          "border backdrop-blur-md backdrop-saturate-150 transition-all duration-300",
+          scrolled
+            ? "bg-white/90 border-zinc-200 shadow-[0_4px_24px_rgba(0,0,0,.06)]"
+            : "bg-white/70 border-white/40 shadow-none"
+        )}
+      >
+        {/* Logo */}
         <Link
           href="/"
-          className="flex gap-2 items-center text-xl font-semibold group"
+          aria-label="Home"
+          className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full"
         >
-          <div className="relative overflow-hidden">
-            <Image
-              src="/logo.png"
-              alt="Logo"
-              width={24}
-              height={24}
-              className="transition-transform duration-500 ease-out group-hover:-translate-y-1 py-2"
-            />
-          </div>
-          <span className="font-semibold tracking-tight leading-tight text-neutral-900 transition-[letter-spacing,opacity] duration-500 ease-out group-hover:tracking-wide group-hover:opacity-80">
-            ozenstudio
-          </span>
+          <Image
+            src="/logo.png"
+            alt="Logo"
+            width={24}
+            height={24}
+            className="transition-transform duration-300 hover:-translate-y-0.5 will-change-transform"
+          />
         </Link>
 
-        <div className="flex gap-6 text-sm font-medium">
-          <Link href="/" className="hover:underline">
-            Home
+        {/* Links */}
+        <ul className="hidden md:flex items-center gap-5 text-[1rem] font-medium text-neutral-700">
+          {LINKS.map((link) => (
+            <li key={link.label}>
+              <Link
+                href={link.href}
+                className="group relative block h-[1em] overflow-hidden leading-[1]"
+              >
+                <span className="block transition duration-[600ms] ease-[cubic-bezier(0.77,0,0.175,1)] group-hover:-translate-y-[110%] group-hover:opacity-0">
+                  {link.label}
+                </span>
+                <span className="absolute left-0 top-0 block translate-y-[110%] opacity-0 transition duration-[600ms] ease-[cubic-bezier(0.77,0,0.175,1)] group-hover:translate-y-0 group-hover:opacity-100 text-black">
+                  {link.label}
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        {/* CTA */}
+        <div className="flex justify-center">
+          <Link
+            href="#contact"
+            className="group relative px-4 py-2 text-[1rem] font-medium rounded-xl bg-neutral-900 text-white hover:bg-black transition-colors"
+          >
+            <span className="relative block h-[1em] overflow-hidden leading-[1]">
+              <span className="block transition duration-[600ms] ease-[cubic-bezier(0.77,0,0.175,1)] group-hover:-translate-y-[110%] group-hover:opacity-0">
+                Contact Us
+              </span>
+              <span className="absolute top-0 left-0 block translate-y-[110%] opacity-0 transition duration-[600ms] ease-[cubic-bezier(0.77,0,0.175,1)] group-hover:translate-y-0 group-hover:opacity-100 text-white">
+                Let&apos;s Talk
+              </span>
+            </span>
           </Link>
-          <a href="#about" className="hover:underline">
-            About
-          </a>
-          <a href="#work" className="hover:underline">
-            Work
-          </a>
-          <a href="#services" className="hover:underline">
-            Services
-          </a>
-          <a href="#process" className="hover:underline">
-            Process
-          </a>
-          <a href="#contact" className="hover:underline">
-            Contact
-          </a>
         </div>
       </nav>
     </header>

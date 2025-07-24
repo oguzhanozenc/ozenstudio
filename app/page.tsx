@@ -1,5 +1,5 @@
 import { Navbar } from "@/components/Navbar";
-import Header from "@/components/Header";
+import Header from "@/components/Header/Header";
 import Services from "@/components/Services";
 import Process from "@/components/Process";
 import { ProjectsSection } from "@/components/ProjectsSection";
