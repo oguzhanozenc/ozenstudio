@@ -1,119 +1,116 @@
+/* components/AnimatedLogo.tsx  (safe for SSR)
+   ─────────────────────────────────────────── */
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useLayoutEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
 type Phase = "initial" | "pc" | "human" | "approach" | "magic";
 
 const PHASE_TIMINGS = [
-  { phase: "pc" as const, at: 800 },
-  { phase: "human" as const, at: 2100 },
-  { phase: "approach" as const, at: 3600 },
-  { phase: "magic" as const, at: 5200 },
-];
+  { phase: "pc", at: 400 },
+  { phase: "human", at: 1000 },
+  { phase: "approach", at: 1800 },
+  { phase: "magic", at: 2600 },
+] as const;
 
 const EASE = [0.25, 0.1, 0.25, 1] as const;
 
+/* phase helper */
 function usePhases(enabled: boolean) {
   const [phase, setPhase] = useState<Phase>("initial");
   const timers = useRef<number[]>([]);
-
   useEffect(() => {
     if (!enabled) return;
-    PHASE_TIMINGS.forEach(({ phase, at }) => {
-      timers.current.push(window.setTimeout(() => setPhase(phase), at));
-    });
+    PHASE_TIMINGS.forEach(({ phase, at }) =>
+      timers.current.push(window.setTimeout(() => setPhase(phase), at))
+    );
     return () => timers.current.forEach(clearTimeout);
   }, [enabled]);
-
   return phase;
 }
 
-type LogoProps = {
-  src: string;
-  side: "left" | "right";
-  phase: Phase;
-};
-
-const Logo = ({ src, side, phase }: LogoProps) => {
-  const isActive = ["pc", "human", "approach", "magic"].includes(phase);
-  if (!isActive) return null;
-
-  const size = 160; // baseline for transform calculations
-  const targetX = ["approach", "magic"].includes(phase)
-    ? 0
-    : side === "left"
-    ? -size - 140
-    : size + 140;
-
-  const initialX = side === "left" ? -size - 240 : size + 240;
-  const initialRotateY = side === "left" ? -45 : 45;
-  const initialRotateX = side === "left" ? 15 : -15;
-  const approachRotateY = side === "left" ? 10 : -10;
-  const approachRotateX = side === "left" ? -5 : 5;
-
-  return (
-    <motion.div
-      className="absolute z-10 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-      initial={{
-        x: initialX,
-        opacity: 0,
-        scale: 0.9,
-        rotateY: initialRotateY,
-        rotateX: initialRotateX,
-      }}
-      animate={{
-        x: targetX,
-        opacity: 1,
-        scale: phase === "approach" ? 1.1 : 1,
-        rotateY: phase === "approach" ? approachRotateY : 0,
-        rotateX: phase === "approach" ? approachRotateX : 0,
-      }}
-      transition={{
-        duration: 1.2,
-        ease: EASE,
-        type: "spring",
-        stiffness: 120,
-        damping: 20,
-      }}
-    >
-      <Image
-        src={src}
-        alt={side === "left" ? "PC" : "Human"}
-        width={size}
-        height={size}
-        className="w-[clamp(96px,24vw,160px)] h-auto"
-        priority
-      />
-    </motion.div>
-  );
-};
-
+/* -------------------------------------------------- */
+/* main component                                     */
+/* -------------------------------------------------- */
 export default function AnimatedLogo() {
   const prefersReducedMotion = useReducedMotion();
   const phase = usePhases(!prefersReducedMotion);
+  const [showCTA, setShowCTA] = useState(false);
+
+  /* ----------- GAP: only read window on client ---------- */
+  const [gapPx, setGapPx] = useState(280); // fallback for SSR
+  useLayoutEffect(() => {
+    const update = () =>
+      setGapPx(Math.min(360, Math.max(220, window.innerHeight * 0.28)));
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  /* reveal CTA after merge */
+  useEffect(() => {
+    if (phase === "magic") {
+      const t = setTimeout(() => setShowCTA(true), 300);
+      return () => clearTimeout(t);
+    }
+    setShowCTA(false);
+  }, [phase]);
+
+  /* mobile / heavy‑motion flag (also client‑safe) */
+  const isMobile =
+    typeof window !== "undefined" ? window.innerWidth < 768 : false;
+  const disableHeavyMotion = prefersReducedMotion || isMobile;
 
   return (
     <div className="relative w-full min-h-screen flex items-center justify-center overflow-hidden text-black select-none">
-      {/* BACKDROP EFFECT */}
+      {/* BACKDROP (unchanged) */}
       <motion.div
         className="absolute inset-0 z-0 pointer-events-none"
         animate={{
           backdropFilter:
-            phase === "magic" ? "blur(14px) saturate(1.3)" : "blur(2px)",
+            phase === "magic" ? "blur(6px) saturate(1.1)" : "blur(1.5px)",
         }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        style={{ backdropFilter: "blur(2px)" }}
+        style={{ backdropFilter: "blur(1.5px)" }}
       />
 
-      {/* LOGO PAIR */}
-      <Logo src="/logo-pc.png" side="left" phase={phase} />
-      <Logo src="/logo-human.png" side="right" phase={phase} />
+      {/* LOGO HALVES */}
+      <LogoHalf
+        src="/logo-pc.png"
+        side="top"
+        phase={phase}
+        gap={gapPx}
+        disableHeavyMotion={disableHeavyMotion}
+      />
+      <LogoHalf
+        src="/logo-human.png"
+        side="bottom"
+        phase={phase}
+        gap={gapPx}
+        disableHeavyMotion={disableHeavyMotion}
+      />
 
-      {/* CTA SECTION */}
+      {/* ✨ sparkles after merge (unchanged) */}
       <AnimatePresence>
         {phase === "magic" && (
+          <motion.span
+            key="sparkles"
+            className="absolute left-1/2 top-[45%] z-20 -translate-x-1/2 text-3xl select-none"
+            initial={{ opacity: 0, scale: 0.6 }}
+            animate={{ opacity: 1, scale: 1.15 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            ✨
+          </motion.span>
+        )}
+      </AnimatePresence>
+
+      {/* CTA block (unchanged) */}
+      <AnimatePresence>
+        {showCTA && (
           <motion.div
             key="cta"
             className="absolute z-20 left-1/2 top-[65%] -translate-x-1/2"
@@ -123,13 +120,12 @@ export default function AnimatedLogo() {
             transition={{
               duration: 1.8,
               ease: EASE,
-              delay: 1.4,
               type: "spring",
               stiffness: 100,
               damping: 15,
             }}
           >
-            {/* LOGO TEXT */}
+            {/* TITLE */}
             <motion.div
               className="text-[clamp(2rem,7vw,3rem)] font-light tracking-tight text-gray-900 text-center"
               animate={{ opacity: [1, 0.85, 1] }}
@@ -149,10 +145,7 @@ export default function AnimatedLogo() {
                     key={i}
                     className="inline-block"
                     style={{
-                      fontFamily:
-                        i === 0
-                          ? '"EB Garamond", serif'
-                          : '"EB Garamond", serif',
+                      fontFamily: '"EB Garamond", serif',
                       fontStyle: i === 0 ? "italic" : "normal",
                     }}
                     initial={{ opacity: 0, y: 30, rotateX: -90 }}
@@ -177,7 +170,7 @@ export default function AnimatedLogo() {
               className="mt-8 text-center text-[15px] leading-snug text-zinc-700 dark:text-zinc-300 font-editorial italic"
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.2, ease: "easeOut", delay: 2.8 }}
+              transition={{ duration: 1.2, ease: "easeOut", delay: 0.8 }}
             >
               We design and build with&nbsp;
               <span className="not-italic text-black dark:text-white">
@@ -189,5 +182,100 @@ export default function AnimatedLogo() {
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+/* -------------------------------------------------- */
+/* Logo half (no window reference)                    */
+/* -------------------------------------------------- */
+type LogoHalfProps = {
+  src: string;
+  side: "top" | "bottom";
+  phase: Phase;
+  gap: number;
+  disableHeavyMotion: boolean;
+};
+
+function LogoHalf({
+  src,
+  side,
+  phase,
+  gap,
+  disableHeavyMotion,
+}: LogoHalfProps) {
+  if (phase === "initial") return null;
+
+  const SIZE = 160;
+
+  /* start completely off‑screen using pure CSS units (SSR‑safe) */
+  const initialY =
+    side === "top" ? `calc(-60vh - ${SIZE}px)` : `calc( 60vh + ${SIZE}px)`;
+
+  const targetY = ["approach", "magic"].includes(phase)
+    ? 0
+    : side === "top"
+    ? -gap
+    : gap;
+
+  /* rotations */
+  const initialRotateX = disableHeavyMotion ? 0 : side === "top" ? -45 : 45;
+  const initialRotateZ = disableHeavyMotion ? 0 : side === "top" ? 5 : -5;
+  const approachRotateX = disableHeavyMotion ? 0 : side === "top" ? 10 : -10;
+  const approachRotateZ = disableHeavyMotion ? 0 : side === "top" ? -2 : 2;
+
+  /* bulb only on bottom half during “human” phase */
+  const showBulb = side === "bottom" && phase === "human";
+
+  return (
+    <motion.div
+      className="absolute z-10 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+      style={{ willChange: "transform, opacity" }}
+      initial={{
+        y: initialY,
+        opacity: 0,
+        scale: 0.9,
+        rotateX: initialRotateX,
+        rotateZ: initialRotateZ,
+      }}
+      animate={{
+        y: targetY,
+        opacity: 1,
+        scale: phase === "approach" ? 1.1 : 1,
+        rotateX: phase === "approach" ? approachRotateX : 0,
+        rotateZ: phase === "approach" ? approachRotateZ : 0,
+      }}
+      transition={{
+        duration: 1.2,
+        ease: EASE,
+        type: "spring",
+        stiffness: 120,
+        damping: 20,
+      }}
+    >
+      <Image
+        src={src}
+        alt={side === "top" ? "PC logo half" : "Human logo half"}
+        width={SIZE}
+        height={SIZE}
+        className="w-[clamp(96px,24vw,160px)] h-auto"
+        priority
+      />
+
+      {/* 💡 bulb */}
+      <AnimatePresence>
+        {showBulb && (
+          <motion.span
+            key="bulb"
+            className="absolute -top-6 left-1/2 -translate-x-1/2 text-2xl select-none"
+            initial={{ opacity: 0, scale: 0.7 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            💡
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }
