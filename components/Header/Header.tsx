@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import AnimatedLogo from "@/components/AnimatedLogo";
+import AnimatedLogo from "@/components/Header/AnimatedLogo";
 import "./Header.css";
 
 type HeaderProps = {

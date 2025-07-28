@@ -1,9 +1,11 @@
-import AboutSection from "@/components/AboutSection";
+import type { Metadata } from "next";
+import AboutPageClient from "../../components/About/AboutPageClient";
+
+export const metadata: Metadata = {
+  title: "About – Ozenstudio",
+  description: "The philosophy behind ozenstudio and the meaning of özen.",
+};
 
 export default function AboutPage() {
-  return (
-    <main className="w-full min-h-screen flex flex-col items-center pt-20">
-      <AboutSection />
-    </main>
-  );
+  return <AboutPageClient />;
 }
