@@ -1,0 +1,89 @@
+:root {
+  --c-teal-0: #003f5f;
+  --c-teal-1: #007d97;
+  --c-teal-2: #00bcd4;
+  --c-white-warm: #fffdf8;
+  --c-cream: #ffe9cf;
+  --c-orange-1: #ff7a00;
+  --c-orange-2: #ff4b00;
+}
+
+.gradient-wrap {
+  position: absolute;
+  inset: 0;
+  background: var(--c-orange-2);
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.gradient-wrap::before {
+  content: "";
+  position: absolute;
+  inset: -50vh -50vw;
+  background: radial-gradient(
+      165% 145% at 85% 112%,
+      var(--c-teal-0) 0%,
+      var(--c-teal-1) 15%,
+      var(--c-teal-2) 30%,
+      var(--c-white-warm) 42%,
+      var(--c-cream) 54%,
+      transparent 68%
+    ),
+    radial-gradient(
+      140% 130% at 45% -15%,
+      var(--c-orange-1) 0%,
+      var(--c-orange-2) 60%
+    );
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  filter: blur(38px);
+  transform: translateZ(0);
+  animation: bgDrift 32s ease-in-out infinite;
+}
+
+.gradient-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' ... %3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' ... %3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 500 500' ... %3C/svg%3E");
+  background-size: 250px 250px, 180px 180px, 350px 350px;
+  background-position: 0 0, 30px 30px, -20px -20px;
+  mix-blend-mode: multiply;
+  opacity: 0.25;
+  animation: smoothGrainMove 25s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes bgDrift {
+  0% {
+    background-position: 0% 0%, 0% 0%;
+  }
+  50% {
+    background-position: -2% 1%, 1% -1%;
+  }
+  100% {
+    background-position: 0% 0%, 0% 0%;
+  }
+}
+
+@keyframes smoothGrainMove {
+  0% {
+    background-position: 0 0, 30px 30px, -20px -20px;
+    transform: rotate(0deg);
+  }
+  33% {
+    background-position: -15px 10px, 45px 15px, -35px -5px;
+    transform: rotate(0.1deg);
+  }
+  66% {
+    background-position: 10px -15px, 15px 45px, -5px -35px;
+    transform: rotate(-0.1deg);
+  }
+  100% {
+    background-position: 0 0, 30px 30px, -20px -20px;
+    transform: rotate(0deg);
+  }
+}
