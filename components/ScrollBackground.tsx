@@ -35,7 +35,6 @@ interface InputElementProps {
   emoji: string;
   color: string;
   index: number;
-  category: string;
   scrollProgress: number;
 }
 
@@ -43,7 +42,6 @@ function InputElement({
   emoji,
   color,
   index,
-  category,
   scrollProgress,
 }: InputElementProps) {
   const meshRef = useRef<THREE.Mesh>(null);
@@ -120,10 +118,14 @@ function InputElement({
 
     groupRef.current.scale.setScalar(scale);
 
-    if (meshRef.current.material && "opacity" in meshRef.current.material) {
-      (
-        meshRef.current.material as THREE.Material & { opacity: number }
-      ).opacity = opacity;
+    // Fixed TypeScript error: properly check material type
+    const material = meshRef.current.material;
+    if (
+      material &&
+      "opacity" in material &&
+      typeof material.opacity === "number"
+    ) {
+      (material as THREE.MeshBasicMaterial).opacity = opacity;
     }
   });
 
@@ -133,6 +135,8 @@ function InputElement({
     canvas.width = 128;
     canvas.height = 128;
     const ctx = canvas.getContext("2d");
+
+    if (!ctx) return new THREE.CanvasTexture(canvas); // Handle null context
 
     // Background with category color and soft shadow
     const gradient = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
@@ -189,10 +193,15 @@ function CentralIdea({ scrollProgress }: { scrollProgress: number }) {
       const glowScale = easedIdeaProgress * (2 + Math.sin(time * 2) * 0.3);
       glowRef.current.scale.setScalar(glowScale);
 
-      if (glowRef.current.material && "opacity" in glowRef.current.material) {
-        (
-          glowRef.current.material as THREE.Material & { opacity: number }
-        ).opacity = easedIdeaProgress * 0.4 * (0.8 + Math.sin(time * 3) * 0.2);
+      // Fixed TypeScript error for glow material
+      const glowMaterial = glowRef.current.material;
+      if (
+        glowMaterial &&
+        "opacity" in glowMaterial &&
+        typeof glowMaterial.opacity === "number"
+      ) {
+        (glowMaterial as THREE.MeshBasicMaterial).opacity =
+          easedIdeaProgress * 0.4 * (0.8 + Math.sin(time * 3) * 0.2);
       }
     }
 
@@ -203,10 +212,13 @@ function CentralIdea({ scrollProgress }: { scrollProgress: number }) {
     }
 
     // Main idea opacity
-    if (meshRef.current.material && "opacity" in meshRef.current.material) {
-      (
-        meshRef.current.material as THREE.Material & { opacity: number }
-      ).opacity = easedIdeaProgress;
+    const material = meshRef.current.material;
+    if (
+      material &&
+      "opacity" in material &&
+      typeof material.opacity === "number"
+    ) {
+      (material as THREE.MeshBasicMaterial).opacity = easedIdeaProgress;
     }
 
     // Subtle rotation
@@ -219,6 +231,8 @@ function CentralIdea({ scrollProgress }: { scrollProgress: number }) {
     canvas.width = 512;
     canvas.height = 512;
     const ctx = canvas.getContext("2d");
+
+    if (!ctx) return new THREE.CanvasTexture(canvas); // Handle null context
 
     // Multiple gradient layers for depth - circular only
     const gradient1 = ctx.createRadialGradient(256, 256, 0, 256, 256, 256);
@@ -268,6 +282,8 @@ function CentralIdea({ scrollProgress }: { scrollProgress: number }) {
     canvas.width = 256;
     canvas.height = 256;
     const ctx = canvas.getContext("2d");
+
+    if (!ctx) return new THREE.CanvasTexture(canvas); // Handle null context
 
     const gradient = ctx.createRadialGradient(128, 128, 0, 128, 128, 128);
     gradient.addColorStop(0, "#FFE06640");
@@ -336,7 +352,13 @@ function Scene() {
   }, []);
 
   const allInputs = useMemo(() => {
-    let inputs = [];
+    const inputs: Array<{
+      emoji: string;
+      color: string;
+      category: string;
+      index: number;
+    }> = [];
+
     inputCategories.forEach((category, categoryIndex) => {
       category.items.forEach((emoji, itemIndex) => {
         inputs.push({
@@ -362,11 +384,9 @@ function Scene() {
           emoji={input.emoji}
           color={input.color}
           index={input.index}
-          category={input.category}
           scrollProgress={scrollProgress}
         />
       ))}
-
       {/* Central idea - emerges from convergence */}
       <CentralIdea scrollProgress={scrollProgress} />
 
